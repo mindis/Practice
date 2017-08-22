@@ -1,0 +1,64 @@
+<settings xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <!-- Save this file in ~/.m2/. on a Mac --> 
+    <!--
+     Note: settings.xml's definition of repository will be prioritized over any individual files
+    <localRepository>
+        ~/.m2/repository
+    </localRepository>
+    <interactiveMode>true</interactiveMode>
+    <usePluginRegistry>false</usePluginRegistry>
+    <offline>false</offline>
+    -->
+
+<repositories>
+     <repository>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>Central Repository</name>
+        <url>http://repo.maven.apache.org/maven2</url>
+     </repository>
+</repositories>
+<pluginRepositories>
+    <pluginRepository>
+        <releases>
+            <updatePolicy>never</updatePolicy>
+        </releases>
+        <snapshots>
+            <enabled>false</enabled>
+        </snapshots>
+        <id>central</id>
+        <name>Central Repository</name>
+        <url>http://repo.maven.apache.org/maven2</url>
+    </pluginRepository>
+</pluginRepositories>
+
+  <profiles>
+   <profile>
+      <id>java8</id>
+      <activation>
+        <jdk>[1.8,)</jdk>
+      </activation>
+      <build>
+        <pluginManagement>
+          <plugins>
+            <plugin>
+              <groupId>org.apache.maven.plugins</groupId>
+              <artifactId>maven-javadoc-plugin</artifactId>
+              <configuration>
+                <!--
+                  | java8 javadoc is more strict than java7 by default and many builds fail due
+                  | to unresolved type/method references. make javadoc more lenient for now.  
+                  |
+                  | http://blog.joda.org/2014/02/turning-off-doclint-in-jdk-8-javadoc.html
+                 -->
+                <additionalparam>-Xdoclint:none</additionalparam>
+              </configuration>
+            </plugin>
+          </plugins>
+        </pluginManagement>
+      </build>
+    </profile>
+  </profiles>
+</settings>

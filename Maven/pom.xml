@@ -1,0 +1,383 @@
+<!--
+pom = Project Object Model
+Archetype: Pre-defined templates for Java projects (e.g. Spring, ZooKeeper, Kafka) 
+
+settings.xml : stores Repository information (allows easy change of repository for different companies as well as type of code that can be accessed) 
+pom.xml: stores dependency information 
+    The global-level coniguration is maintained at MAVEN_HOME/conf/ settings.xml
+    The user-level coniguration is maintained at USER_HOME/.m2/settings.xml
+    The project-level coniguration is maintained at PROJECT_HOME/pom.xml
+
+groupID: The owners of the dependency
+artifactID: The specific dependency
+version: The version of this dependency (SNAPSHOT means project is still in development phase and not released) 
+type: jar, zip
+
+Transitive Dependencies: Maven includes dependencies of it's own dependency. If multiple version of same dependency occur, it includes the closer one by default
+    e.g.  Bver2 gets included instead of Bver3 as it is closer to root (Breadth First Search) 
+           root->Aver1 -> Bver2 -> Cver3
+           root->Dver4-> E->ver3 -> Bver3
+
+commands
+    mvn clean 
+    mvn package
+    mvn dependency:list
+    mvn dependency:tree
+    mvn site
+    mvn exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 com.zookeeperPracticeOne.app.TestZkConnection"
+
+
+<properties> Allows you to create variables that can be used inside your pom.xml file 
+e.g. 
+    Allows you to declare a specific version for a dependency (notice how it uses ${junit.version} variable below
+    note: Can also include exclusion for transitive dependencies within each dependency
+    <properties> 
+        <junit.version>4.11</junit.version> 
+    </properties> 
+    ...
+    <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>${junit.version}</version>  
+        <scope>test</scope>
+        <exclusions> 
+            <exclusion>
+                 <groupId> org.hamcrest</groupId>
+                 <artifactId>hamcrest</artifactId>
+            <exclusion>
+        </exclusions>
+    </dependency>
+
+Dependency Scope (certain dependency only gets included depending on build, run, test)
+    compile => Always included
+    runtime => Only included during run
+    test => Only included during test
+    system => Included from hard-coded path 
+    import => Importing other pom.xml files
+    provided => Only during build and test phases
+
+
+Maven Project Basics 
+    pom.xml 
+    src/main/java => Actual code
+    src/main/resources => Spring config.files
+    src/main/scripts => .sh files for operations
+    src/main/db => Database files
+    src/test/java => Test code
+    target => Contains .class files generated 
+    src/it => Integration tests
+
+Generate documentation
+>> mvn site
+Re-generate documentation
+>> mvn clean site
+
+Compile and package into .jar file
+>> mvn package
+
+Plugins => Allows for multiple behavior of pom.xml file (such as mvn install, mvn clean, mvn package, generating javadocs, unitTest reports, codeCoverage reports, findBugs reports)
+mvn plugin_identifier:goal_identifier
+
+plugin : (version of compiler stated in pom.xml)
+goal : (compile or clean)
+
+Life-Cycle of Maven
+    validate: Ensures all dependencies are downloadable
+    compile 
+    test: Runs unit test, if fails, life-cycle stops and no packaging is done. Can skip test by passing in argument -Dmaven.test.skip=true to mvn
+    package: Package into .jar file
+    install: Install code in local repository
+    deploy: Deploy code to remote repository
+
+Complete Default Life-Cycle of Maven
+<configuration>
+    <id>default</id>
+    <phases>
+        <phase>validate</phase>
+        <phase>initialize</phase>
+        <phase>generate-sources</phase>
+        <phase>process-sources</phase>
+        <phase>generate-resources</phase>
+        <phase>process-resources</phase>
+        <phase>compile</phase>
+        <phase>process-classes</phase>
+        <phase>generate-test-sources</phase>
+        <phase>process-test-sources</phase>
+        <phase>generate-test-resources</phase>
+        <phase>process-test-resources</phase>
+        <phase>test-compile</phase>
+        <phase>process-test-classes</phase>
+        <phase>test</phase>
+        <phase>prepare-package</phase>
+        <phase>package</phase>
+        <phase>pre-integration-test</phase>
+        <phase>integration-test</phase>
+        <phase>post-integration-test</phase>
+        <phase>verify</phase>
+        <phase>install</phase>
+        <phase>deploy</phase>
+    </phases>
+</configuration>
+
+Can decide what stage to execute a plugin using <phase> 
+
+Multi-modal Projects (Can contain pom.xml within another pom.xml to build each component separately) 
+Parent POM will declare 
+    <parent>pom</parent>
+Child of parent POM will declare
+    <parent>
+        <groupId> GroupIdOfParent </groupId>
+        <artifactId> ArtifactIdOfParent </artifactId>
+        <version> VersionOfParent </version>
+    </parent>
+
+Maven Release
+
+
+note: Need to contain entire package name with class name that contains main function
+Use this
+    <mainFile>com.zookeeperPracticeOne.app.className</mainFile> 
+and NOT this
+    <mainFile>className</mainFile> 
+
+To debug using jdb, run 
+    note: y => yes, suspend = y => suspend the program before it starts so you can debug it instead of running it to completion
+    Assuming your package name is com.zookeeperPracticeOne.app and main java file name is TestZkConnection.java 
+    >> mvn exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 com.zookeeperPracticeOne.app.TestZkConnection"
+    Then, open up a new terminal to run jdb
+    >> jdb -attach localhost:1044
+    OR
+    >> jdb -attach 1044
+    You can then use jdb in that new terminal as usual
+To debug using Eclipse
+    Import the project as a Maven project into eclipse, it will give a project name, if it doesn't you're not important properly. 
+    Then do in terminal
+    >> mvn exec:exec -Dexec.executable="java" -Dexec.args="-classpath %classpath -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=1044 com.zookeeperPracticeOne.app.TestZkConnection"
+    Then, go into eclipse and do DebugConfigurations
+    Project: projectNameGivenByMavenWhenImporting
+    Host: localhost
+    Port: 1044
+    Then, click Run->DebugHistory->NewConfiguration (the configuration you just made) 
+    Then, hit the Debug window (it should be somewhere in eclipse)
+    You will be able to see all the threads. Pick the thread you want and hit Suspend button (looks like Pause), then after suspending you can hit on step into, step over, etc. 
+
+To run a pom.xml file that has different java main files and only 1 of them with arguments
+    >> mvn exec:java -Dexec.mainClass="io.confluent.examples.consumer.SimpleConsumerExample" -Dexec.args="10 0 0 localhost:9092"
+
+<properties>
+This is the default define in .m2 folder. Google it. It's a maven thing
+    <packageDir>${project.build.directory}/dist/${project.name}</packageDir>
+</properties>
+
+Maven Package Java files into bash .sh scripts 
+http://www.mojohaus.org/appassembler/appassembler-maven-plugin/
+e.g. 
+            NOTE: Just running this plugin won't work as it would not set the file permissions to executable for you, you need to run maven-antrun-plugin to let your code be executable
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <configuration>
+                    NOTE: You need to use the packageDir properties above so that it can find the java files during runtime
+                    <assembleDirectory>${packageDir}</assembleDirectory>
+                    <binFileExtensions>
+                        <unix>.sh</unix>
+                    </binFileExtensions>
+                    <platforms>
+                        <platform>unix</platform>
+                    </platforms>
+                    <environmentSetupFileName>setEnv.sh</environmentSetupFileName>  // note: This is your own personal file to run
+                    <useTimestampInSnapshotFileName>false</useTimestampInSnapshotFileName>
+
+                    <programs>
+                        <program>
+                            <mainClass>kafka.Kafka</mainClass>
+                            <commandLineArguments>
+                                <commandLineArgument>@BASEDIR@/config/server.properties</commandLineArgument>
+                            </commandLineArguments>
+                            <name>startKafka</name>
+                            <jvmSettings>
+                                <extraArguments>
+                                    <extraArgument>-server</extraArgument>
+                                    <extraArgument>$JVM_HEAP_SETTINGS</extraArgument>
+                                    <extraArgument>$JVM_GC_OPTIONS</extraArgument>
+                                    <extraArgument>-XX:+HeapDumpOnOutOfMemoryError</extraArgument>
+                                    <extraArgument>-XX:HeapDumpPath="${LOG_DIR}"</extraArgument>
+                                    <extraArgument>-XX:+UseGCLogFileRotation</extraArgument>
+                                    <extraArgument>-XX:GCLogFileSize="${GC_LOG_FILE_SIZE}"</extraArgument>
+                                    <extraArgument>-XX:NumberOfGCLogFiles="${NUMBER_OF_GC_LOG_FILES}"</extraArgument>
+                                    <extraArgument>-Xloggc:"${LOG_DIR}"/Kafka-gc.log</extraArgument>
+                                    <extraArgument>-Dlog4j.configuration=file:@BASEDIR@/config/kafka-server-log4j.properties</extraArgument>
+                                    <extraArgument>-Djsse.SSLEngine.acceptLargeFragments=true</extraArgument>
+                                    <extraArgument>-Dcom.sun.management.jmxremote</extraArgument>
+                                    <extraArgument>-Dcom.sun.management.jmxremote.authenticate=false</extraArgument>
+                                    <extraArgument>-Dcom.sun.management.jmxremote.ssl=false</extraArgument>
+                                    <extraArgument>-Dcom.sun.management.jmxremote.port="${KAFKA_JMX_PORT}"</extraArgument>
+                                    <extraArgument>-Dcom.sun.management.jmxremote.local.only=true</extraArgument>
+                                    <extraArgument>-javaagent:@REPO@/com/soon/mandm/jmxtrans-agent-funnel/${jmxtrans.agent.funnel.version}/jmxtrans-agent-funnel-${jmxtrans.agent.funnel.version}-all.jar=../config/kafka-jmxtrans-agent.xml</extraArgument>
+                                    <extraArgument>-Djava.security.properties="@BASEDIR@/config/jvm.java.security"</extraArgument>
+                                </extraArguments>
+                            </jvmSettings>
+                        </program>
+                    </programs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>assemble</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+-->
+<!-- 
+To make your files executable
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.6</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>  
+                        // TO MAKE ALL FILES EXECUTABLE from the maven assembler above by setting their permissions to 700
+                        <configuration>
+                            <target>
+                                <chmod dir="${packageDir}" perm="700">
+                                    <include name="**/*.sh" />
+                                    <include name="**/ant" />
+                                </chmod>
+                            </target>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>groovydoc</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <taskdef classname="org.codehaus.groovy.ant.Groovydoc" classpathref="maven.compile.classpath" name="groovydoc" />
+                                <groovydoc destdir="${project.reporting.outputDirectory}/groovydoc" doctitle="${project.name}" sourcepath="${basedir}/src/main/groovy" use="true" windowtitle="${project.name}">
+                                    <link href="http://download.oracle.com/javase/6/docs/api" packages="java.,org.xml.,javax.,org.xml." />
+                                    <link href="http://groovy.codehaus.org/api/" packages="groovy.,org.codehaus.groovy." />
+                                </groovydoc>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+-->
+
+<!-- 
+     To package a file as a .jar file
+https://maven.apache.org/plugins/maven-shade-plugin/
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>tool</shadedClassifierName>
+                    <transformers>
+                        <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                            <mainClass>com.soon.soon.soon.kafka.config.KafkaTopicCreator</mainClass>
+                        </transformer>
+                    </transformers>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.skife.maven</groupId>
+                <artifactId>really-executable-jar-maven-plugin</artifactId>
+                <version>1.4.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>really-executable-jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+-->
+
+<!--
+Difference between mvn dependency:list and mvn dependency:tree
+>> mvn dependency:list
+     [INFO] The following files have been resolved:
+     [INFO]    org.apache.kafka:kafka-clients:jar:0.9.0.1-sfdc-0.0.1-SNAPSHOT:compile
+     [INFO]    net.bytebuddy:byte-buddy:jar:1.2.3:test
+     [INFO]    io.netty:netty:jar:3.7.0.Final:compile
+     [INFO]    com.101tec:zkclient:jar:0.7:compile
+     [INFO]    jline:jline:jar:0.9.94:compile
+     [INFO]    net.sf.jopt-simple:jopt-simple:jar:3.2:compile
+     [INFO]    org.apache.directory.studio:org.apache.commons.io:jar:2.4:compile
+     [INFO]    org.slf4j:slf4j-api:jar:1.7.19:compile
+     [INFO]    log4j:log4j:jar:1.2.15:compile
+     [INFO]    org.apache.kafka:kafka_2.10:jar:0.9.0.1-sfdc-0.0.1-SNAPSHOT:compile
+     [INFO]    javax.activation:activation:jar:1.1:compile
+     [INFO]    com.yammer.metrics:metrics-core:jar:2.2.0:compile
+     [INFO]    org.apache.zookeeper:zookeeper:jar:3.4.6:compile
+     [INFO]    javax.mail:mail:jar:1.4:compile
+     [INFO]    org.scala-lang:scala-library:jar:2.10.5:compile
+     [INFO]    ch.qos.logback:logback-core:jar:1.1.6:runtime
+     [INFO]    net.jpountz.lz4:lz4:jar:1.2.0:compile
+     [INFO]    org.objenesis:objenesis:jar:2.1:test
+     [INFO]    commons-cli:commons-cli:jar:1.3:compile
+     [INFO]    commons-io:commons-io:jar:2.4:compile
+     [INFO]    org.xerial.snappy:snappy-java:jar:1.1.1.7:compile
+     [INFO]    org.slf4j:slf4j-log4j12:jar:1.6.1:compile
+     [INFO]    org.hamcrest:hamcrest-core:jar:1.3:test
+     [INFO]    ch.qos.logback:logback-classic:jar:1.1.6:runtime
+     [INFO]    junit:junit:jar:4.12:test
+     [INFO]    org.mockito:mockito-core:jar:2.0.43-beta:test
+>> mvn depdendency:tree
+     [INFO] com.soon.data:dva-kafka-topic-deployer:jar:0.0.1-SNAPSHOT
+     [INFO] +- com.101tec:zkclient:jar:0.7:compile
+     [INFO] |  +- org.slf4j:slf4j-log4j12:jar:1.6.1:compile
+     [INFO] |  +- log4j:log4j:jar:1.2.15:compile
+     [INFO] |  |  \- javax.mail:mail:jar:1.4:compile
+     [INFO] |  |     \- javax.activation:activation:jar:1.1:compile
+     [INFO] |  \- org.apache.zookeeper:zookeeper:jar:3.4.6:compile
+     [INFO] |     +- jline:jline:jar:0.9.94:compile
+     [INFO] |     \- io.netty:netty:jar:3.7.0.Final:compile
+     [INFO] +- commons-cli:commons-cli:jar:1.3:compile
+     [INFO] +- org.apache.directory.studio:org.apache.commons.io:jar:2.4:compile
+     [INFO] |  \- commons-io:commons-io:jar:2.4:compile
+     [INFO] +- org.apache.kafka:kafka_2.10:jar:0.9.0.1-sfdc-0.0.1-SNAPSHOT:compile
+     [INFO] |  +- org.apache.kafka:kafka-clients:jar:0.9.0.1-sfdc-0.0.1-SNAPSHOT:compile
+     [INFO] |  |  +- org.xerial.snappy:snappy-java:jar:1.1.1.7:compile
+     [INFO] |  |  \- net.jpountz.lz4:lz4:jar:1.2.0:compile
+     [INFO] |  +- org.scala-lang:scala-library:jar:2.10.5:compile
+     [INFO] |  +- com.yammer.metrics:metrics-core:jar:2.2.0:compile
+     [INFO] |  \- net.sf.jopt-simple:jopt-simple:jar:3.2:compile
+     [INFO] +- org.slf4j:slf4j-api:jar:1.7.19:compile
+     [INFO] +- ch.qos.logback:logback-classic:jar:1.1.6:runtime
+     [INFO] |  \- ch.qos.logback:logback-core:jar:1.1.6:runtime
+     [INFO] +- junit:junit:jar:4.12:test
+     [INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:test
+     [INFO] \- org.mockito:mockito-core:jar:2.0.43-beta:test
+     [INFO]    +- net.bytebuddy:byte-buddy:jar:1.2.3:test
+     [INFO]    \- org.objenesis:objenesis:jar:2.1:test
+
+Basically
+   lalaWhoIsMainParent
+   +- kakaWhoIsChild1OfLala
+   +- babaWhoIsChild2OfLala
+      \- dadaWhoIsOnlyChildOfBaba
+         \- dedeWhoIsOnlyChildOfDada
+   \- kekeWhoIsFinalChildOfLala
+-->
+
