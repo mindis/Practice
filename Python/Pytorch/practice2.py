@@ -10,3 +10,4 @@ import torch
 # has gradcheck() for you to check that your backward gradient implementation is actually correct.
 
 # Extending torch.nn => Need set learnable parameters in init(), as well as forward() that calls an activation function that has backward() implemented
+# Also, each module can be an entire NN structure, instead of just a single function
