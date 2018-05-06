@@ -24,10 +24,10 @@ mod = SourceModule("""
     // Takes in a  
     __global__ void doublify(float *arr)
     {
-        # There will be a separate thread index for each thread
-        # The index of the array is determined by the id's of executing thread
+        // There will be a separate thread index for each thread
+        // The index of the array is determined by the id's of executing thread
         int idx = threadIdx.x + threadIdx.y*3;
-        # Since there is no overlap, can just double each arr index
+        // Since there is no overlap, can just double each arr index
         arr[idx] *= 2;
     }
     """)
