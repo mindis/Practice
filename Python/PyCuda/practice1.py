@@ -1,6 +1,8 @@
 # Working with CUDA using PyCuda 
 # Note: skcuda (scikit-cuda) builds on top of pycuda to work with additional CUDA libraries that pycuda doesn't include
 
+# A hello world example
+
 import pycuda.driver as cuda
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
@@ -52,3 +54,9 @@ print(arr)
 
 # Print the result
 print(results)
+
+# However, the method above only works if number of threads > array size
+
+# if number of threads < array size, need to rewrite so each thread executes in a for loop
+
+# Done in next practice
