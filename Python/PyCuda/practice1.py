@@ -22,24 +22,33 @@ cuda.memcpy_htod(arrInGpu, arr)
 # CUDA is written in C code, so you need to compile it
 mod = SourceModule("""
     // Takes in a  
-    __global__ void doublify(float *a)
+    __global__ void doublify(float *arr)
     {
-        int idx = threadIdx.x + threadIdx.y*4;
-        a[idx] *= 2;
+        # There will be a separate thread index for each thread
+        # The index of the array is determined by the id's of executing thread
+        int idx = threadIdx.x + threadIdx.y*3;
+        # Since there is no overlap, can just double each arr index
+        arr[idx] *= 2;
     }
     """)
 
 # Get the GPU kernel function that was compiled
 func = mod.get_function("doublify")
 
-# Execute the Gpu kernel function
-func(arrInGpu, block=(4,4,1))
+# Execute the GPU kernel function
+# and give it a block size of (x,y,z) = (3,3,1),
+# which mean's there will be (3*3*1) = 9 threads
+# with id's ((0,0,0), (0,1,0), (0,2,0), (1,0,0), (1,1,0), (1,2,0), (2,0,0), (2,1,0), (2,2,0)
+func(arrInGpu, block=(3,3,1))
 
 # Create memory to store output back in host
-arrDoubled = np.empty_like(arr)
-cuda.memcpy_dtoh(arrDoubled, arrInGpu)
+results = np.empty_like(arr)
+
+# Copy back from the executed GPU func to the created array on host
+cuda.memcpy_dtoh(results, arrInGpu)
 
 # Print the original result
 print(arr)
+
 # Print the result
-print(arrDoubled)
+print(results)
