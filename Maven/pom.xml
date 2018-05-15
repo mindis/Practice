@@ -1,6 +1,6 @@
 <!--
 pom = Project Object Model
-Archetype: Pre-defined templates for Java projects (e.g. Spring, ZooKeeper, Kafka) 
+Archetype: Pre-defined templates for Java projects (e.g. Spring, ZooKeeper, Kafka, Librec) 
 
 settings.xml : stores Repository information (allows easy change of repository for different companies as well as type of code that can be accessed) 
 pom.xml: stores dependency information 
@@ -15,8 +15,8 @@ type: jar, zip
 
 Transitive Dependencies: Maven includes dependencies of it's own dependency. If multiple version of same dependency occur, it includes the closer one by default
     e.g.  Bver2 gets included instead of Bver3 as it is closer to root (Breadth First Search) 
-           root->Aver1 -> Bver2 -> Cver3
-           root->Dver4-> E->ver3 -> Bver3
+           root-> Aver1 -> Bver2 -> Cver3
+           root-> Dver4 -> Ever3 -> Bver3
 
 commands
     mvn clean 
