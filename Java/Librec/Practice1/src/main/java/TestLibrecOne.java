@@ -17,6 +17,9 @@ import net.librec.recommender.cf.ItemKNNRecommender;
 import net.librec.eval.RecommenderEvaluator;
 import net.librec.eval.rating.RMSEEvaluator;
 
+import net.librec.filter.GenericRecommendedFilter;
+import net.librec.recommender.item.RecommendedItem;
+
 // public class TestZkConnection {
 public class TestLibrecOne {
     private static LibrecOne lrOne; 
@@ -50,7 +53,6 @@ public class TestLibrecOne {
         List<String> itemIdList = new ArrayList<>();
         userIdList.add("1");
         itemIdList.add("70");
-        /*
 
         // filter the recommended result
         List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
@@ -58,7 +60,6 @@ public class TestLibrecOne {
         filter.setUserIdList(userIdList);
         filter.setItemIdList(itemIdList);
         recommendedItemList = filter.filter(recommendedItemList);
-
         // print filter result
         for (RecommendedItem recommendedItem : recommendedItemList) {
             System.out.println(
@@ -67,7 +68,6 @@ public class TestLibrecOne {
                     "value:" + recommendedItem.getValue()
             );
         }
-        */
         System.out.println("Done Testing");
     }
 }
