@@ -2,6 +2,13 @@ package com.librecPracticeOne.app;
 import java.util.List; 
 import java.util.ArrayList;
 
+import net.librec.conf.Configuration;
+import net.librec.data.model.TextDataModel;
+import net.librec.recommender.RecommenderContext;
+/*
+import net.librec.
+import net.librec.
+*/
 
 // public class TestZkConnection {
 public class TestLibrecOne {
@@ -9,16 +16,15 @@ public class TestLibrecOne {
     public static void main(String[] args) throws Exception {
         System.out.println("Testing librec One");
 
-        /*
         // build data model
         Configuration conf = new Configuration();
-        conf.set("dfs.data.dir", "G:/LibRec/librec/data");
+        String dataLocation = "/root/Github/Public/RecommenderSystems/librec/data";
+        conf.set("dfs.data.dir", dataLocation);
         TextDataModel dataModel = new TextDataModel(conf);
         dataModel.buildDataModel();
-
         // build recommender context
         RecommenderContext context = new RecommenderContext(conf, dataModel);
-
+        /*
         // build similarity
         conf.set("rec.recommender.similarity.key" ,"item");
         RecommenderSimilarity similarity = new PCCSimilarity();
