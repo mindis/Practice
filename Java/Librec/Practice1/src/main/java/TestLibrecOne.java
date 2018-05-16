@@ -5,7 +5,13 @@ import java.util.ArrayList;
 import net.librec.conf.Configuration;
 import net.librec.data.model.TextDataModel;
 import net.librec.recommender.RecommenderContext;
+
+import net.librec.similarity.RecommenderSimilarity;
+import net.librec.similarity.PCCSimilarity;
+import net.librec.recommender.Recommender;
+import net.librec.recommender.cf.ItemKNNRecommender;
 /*
+import net.librec.
 import net.librec.
 import net.librec.
 */
@@ -15,7 +21,6 @@ public class TestLibrecOne {
     private static LibrecOne lrOne; 
     public static void main(String[] args) throws Exception {
         System.out.println("Testing librec One");
-
         // build data model
         Configuration conf = new Configuration();
         String dataLocation = "/root/Github/Public/RecommenderSystems/librec/data";
@@ -24,21 +29,18 @@ public class TestLibrecOne {
         dataModel.buildDataModel();
         // build recommender context
         RecommenderContext context = new RecommenderContext(conf, dataModel);
-        /*
         // build similarity
         conf.set("rec.recommender.similarity.key" ,"item");
         RecommenderSimilarity similarity = new PCCSimilarity();
         similarity.buildSimilarityMatrix(dataModel);
         context.setSimilarity(similarity);
-
         // build recommender
         conf.set("rec.neighbors.knn.number", "5");
         Recommender recommender = new ItemKNNRecommender();
         recommender.setContext(context);
-
         // run recommender algorithm
         recommender.recommend(context);
-
+        /*
         // evaluate the recommended result
         RecommenderEvaluator evaluator = new RMSEEvaluator();
         System.out.println("RMSE:" + recommender.evaluate(evaluator));
