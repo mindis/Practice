@@ -1,7 +1,10 @@
 package com.librecPracticeOne.app;
+
+// Java Imports
 import java.util.List; 
 import java.util.ArrayList;
 
+// Librec Imports
 import net.librec.conf.Configuration;
 import net.librec.data.model.TextDataModel;
 import net.librec.recommender.RecommenderContext;
@@ -10,11 +13,9 @@ import net.librec.similarity.RecommenderSimilarity;
 import net.librec.similarity.PCCSimilarity;
 import net.librec.recommender.Recommender;
 import net.librec.recommender.cf.ItemKNNRecommender;
-/*
-import net.librec.
-import net.librec.
-import net.librec.
-*/
+
+import net.librec.eval.RecommenderEvaluator;
+import net.librec.eval.rating.RMSEEvaluator;
 
 // public class TestZkConnection {
 public class TestLibrecOne {
@@ -40,7 +41,6 @@ public class TestLibrecOne {
         recommender.setContext(context);
         // run recommender algorithm
         recommender.recommend(context);
-        /*
         // evaluate the recommended result
         RecommenderEvaluator evaluator = new RMSEEvaluator();
         System.out.println("RMSE:" + recommender.evaluate(evaluator));
@@ -50,6 +50,7 @@ public class TestLibrecOne {
         List<String> itemIdList = new ArrayList<>();
         userIdList.add("1");
         itemIdList.add("70");
+        /*
 
         // filter the recommended result
         List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
