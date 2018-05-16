@@ -2,12 +2,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <!-- To execute, run >> mvn package , then run >> ./target/LibRecPracticeOneDemo -->
     <!-- The name LibRecPracticeOneDemo comes from the programFile configuration inside this maven file-->
+    <!-- 4.0.0 is the POM version you defined above-->
     <modelVersion>4.0.0</modelVersion>
     <artifactId>librec-practiceone</artifactId>
     <groupId>experiment</groupId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>librec-experiment</name>
+    <properties>
+        <compiler.version>1.8</compiler.version>
+        <java.version>${compiler.version}</java.version>
+    </properties>
+
     <dependencies>
     <!-- Librec itself -->
         <dependency>
@@ -28,9 +34,29 @@
         </dependency>
     </dependencies>
 
-    <!-- Exclude log4j from dependency, and include up there from newest version --> 
     <build>
         <plugins>
+            <plugin>
+                <groupId>com.google.code.sortpom</groupId>
+                <artifactId>maven-sortpom-plugin</artifactId>
+                <version>2.2.1</version>
+                <configuration>
+                    <nrOfIndentSpace>4</nrOfIndentSpace>
+                    <sortDependencies>scope,groupId,artifactId</sortDependencies>
+                    <keepBlankLines>true</keepBlankLines>
+                    <sortProperties>true</sortProperties>
+                    <expandEmptyElements>false</expandEmptyElements>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${compiler.version}</source>
+                    <target>${compiler.version}</target>
+                </configuration>
+            </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -43,7 +69,6 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <!-- <mainClass>ZkConnector</mainClass> -->
                                     <mainClass>com.librecPracticeOne.app.TestLibrecOne</mainClass>
                                 </transformer>
                             </transformers>
@@ -68,6 +93,7 @@
                     <programFile>LibRecPracticeOneDemo</programFile>
                 </configuration>
             </plugin>
+            -->
         </plugins>
     </build>
 </project>
