@@ -11,14 +11,24 @@ import net.librec.recommender.RecommenderContext;
 
 import net.librec.similarity.RecommenderSimilarity;
 import net.librec.similarity.PCCSimilarity;
+
 import net.librec.recommender.Recommender;
+// Rating recommender
 import net.librec.recommender.cf.ItemKNNRecommender;
+// Ranking recommender
+import net.librec.recommender.cf.ranking.WRMFRecommender;
+
 
 import net.librec.eval.RecommenderEvaluator;
+// Rating evaluator
 import net.librec.eval.rating.RMSEEvaluator;
+
+// Ranking evaluator
+import net.librec.eval.ranking.NormalizedDCGEvaluator;
 
 import net.librec.filter.GenericRecommendedFilter;
 import net.librec.recommender.item.RecommendedItem;
+import net.librec.recommender.item.RecommendedList;
 
 // public class TestZkConnection {
 public class TestLibrecTwo {
@@ -48,10 +58,12 @@ public class TestLibrecTwo {
 
         TextDataModel dataModel = new TextDataModel(conf);
         dataModel.buildDataModel();
+        System.out.println("Done building data model");
 
         // Build recommender context
         // contains data model, configuration, similarity matrix
         RecommenderContext context = new RecommenderContext(conf, dataModel);
+        System.out.println("Done building context");
 
         // Build similarity
         conf.set("rec.recommender.similarity.key" ,"item");
@@ -61,20 +73,43 @@ public class TestLibrecTwo {
         // Set similarity into recommender context
         context.setSimilarity(similarity);
 
+        System.out.println("Done building similarity");
+
         // Build recommender algorithm
+
+        // Rating recommender
+        /* //
         conf.set("rec.neighbors.knn.number", "5");
         Recommender recommender = new ItemKNNRecommender();
+        // */
+
+        // Ranking Recommender
+        Recommender recommender = new WRMFRecommender();
+
         recommender.setContext(context);
+
+        System.out.println("Done setting context from recommender");
+
+
+        // Ranking instead of rating prediction
+        conf.set("rec.recommender.isranking", "true");
+        conf.set("rec.recommender.ranking.topn", "10");
 
         // Run recommender algorithm
         // Run algorithm on the recommender context.
-        // Basically, every algorithm takes in a recommender context.
-        // Basically, every algorithm takes in a and an evaluator. 
+        // Basically, every algorithm takes in a recommender context, and also evaluator. 
         recommender.recommend(context);
 
+        System.out.println("Done recommending");
+
         // Evaluate the recommended result
-        RecommenderEvaluator evaluator = new RMSEEvaluator();
-        System.out.println("RMSE:" + recommender.evaluate(evaluator));
+        //RecommenderEvaluator evaluator = new RMSEEvaluator();
+        //System.out.println("RMSE: " + recommender.evaluate(evaluator));
+        RecommenderEvaluator evaluator = new NormalizedDCGEvaluator();
+        List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
+        System.out.println("NDCG: " + recommender.evaluate(evaluator));
+        // RecommendedList recommendedItemList = recommender.getRecommendedList();
+        // System.out.println("NDCG: " + evaluator.evaluate(context, recommendedItemList));
 
         // Set id list of filter
         List<String> userIdList = new ArrayList<>();
@@ -87,7 +122,7 @@ public class TestLibrecTwo {
         userIdList.add("1");
         itemIdList.add("70");
 
-        List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
+
         GenericRecommendedFilter filter = new GenericRecommendedFilter();
         filter.setUserIdList(userIdList);
         filter.setItemIdList(itemIdList);
