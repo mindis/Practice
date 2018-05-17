@@ -29,17 +29,22 @@ public class TestLibrecTwo {
         // Build data model
         Configuration conf = new Configuration();
         String dataLocation = "/root/Github/RecommendationSystems/sclrecommender/data/movielens";
-        /* 
         conf.set("dfs.data.dir", dataLocation);
-        conf.set("data.input.path", "ml-100k/u.data");
-        // */
-        //
-        conf.set("dfs.data.dir", dataLocation);
+
+        // 20m
+        // Similarly, change ',' to ' ' and got rid of first line
+        //conf.set("data.input.path", "ml-20m/ratings.csv");
+        // Note: Out of memory error, Librec doesn't handle large datasets well
+        conf.set("data.input.path", "ml-20m/ratingsLibrec.csv");
+
+        // 1m
         // Librec only splits by tabs and no other delimiter
         // so manually created a copy of the file, and replaced all old delimiters of "::" to " "
         // conf.set("data.input.path", "ml-1m/ratings.dat"); 
         conf.set("data.input.path", "ml-1m/ratingsLibrec.dat");
-        // */
+
+        // 100k
+        conf.set("data.input.path", "ml-100k/u.data");
 
         TextDataModel dataModel = new TextDataModel(conf);
         dataModel.buildDataModel();
