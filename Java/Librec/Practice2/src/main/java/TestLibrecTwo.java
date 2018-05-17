@@ -78,13 +78,13 @@ public class TestLibrecTwo {
         // Build recommender algorithm
 
         // Rating recommender
-        /* //
-        conf.set("rec.neighbors.knn.number", "5");
+        //
+        conf.set("rec.neighbors.knn.number", "80");
         Recommender recommender = new ItemKNNRecommender();
         // */
 
         // Ranking Recommender
-        Recommender recommender = new WRMFRecommender();
+        //Recommender recommender = new WRMFRecommender();
 
         recommender.setContext(context);
 
@@ -116,6 +116,7 @@ public class TestLibrecTwo {
 
         RecommenderEvaluator evaluatorNdcg = new NormalizedDCGEvaluator();
         // Must set evaluator manually here for it to work.
+        //evaluatorNdcg.setTopN(-1);
         evaluatorNdcg.setTopN(10);
         System.out.println("NDCG: " + recommender.evaluate(evaluatorNdcg));
         // RecommendedList recommendedItemList = recommender.getRecommendedList();
