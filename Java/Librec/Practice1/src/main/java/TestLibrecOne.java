@@ -25,42 +25,83 @@ public class TestLibrecOne {
     private static LibrecOne lrOne; 
     public static void main(String[] args) throws Exception {
         System.out.println("Testing librec One");
-        // build data model
+
+        // Build data model
         Configuration conf = new Configuration();
         String dataLocation = "/root/Github/Public/RecommenderSystems/librec/data";
         conf.set("dfs.data.dir", dataLocation);
         TextDataModel dataModel = new TextDataModel(conf);
         dataModel.buildDataModel();
-        // build recommender context
+
+        // Build recommender context
+        // contains data model, configuration, similarity matrix
         RecommenderContext context = new RecommenderContext(conf, dataModel);
-        // build similarity
+
+        // Build similarity
         conf.set("rec.recommender.similarity.key" ,"item");
         RecommenderSimilarity similarity = new PCCSimilarity();
         similarity.buildSimilarityMatrix(dataModel);
+
+        // Set similarity into recommender context
         context.setSimilarity(similarity);
-        // build recommender
+
+        // Build recommender algorithm
         conf.set("rec.neighbors.knn.number", "5");
         Recommender recommender = new ItemKNNRecommender();
         recommender.setContext(context);
-        // run recommender algorithm
+
+        // Run recommender algorithm
+        // Run algorithm on the recommender context.
+        // Basically, every algorithm takes in a recommender context.
+        // Basically, every algorithm takes in a and an evaluator. 
         recommender.recommend(context);
-        // evaluate the recommended result
+
+        // Evaluate the recommended result
         RecommenderEvaluator evaluator = new RMSEEvaluator();
         System.out.println("RMSE:" + recommender.evaluate(evaluator));
 
-        // set id list of filter
+        // Set id list of filter
         List<String> userIdList = new ArrayList<>();
         List<String> itemIdList = new ArrayList<>();
+
+        // Filter the recommended result
+        // to include all item for user 1
+        // and all users for item 70
+        System.out.println("All items of user 1, also all users of item 70");
         userIdList.add("1");
         itemIdList.add("70");
 
-        // filter the recommended result
         List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
         GenericRecommendedFilter filter = new GenericRecommendedFilter();
         filter.setUserIdList(userIdList);
         filter.setItemIdList(itemIdList);
         recommendedItemList = filter.filter(recommendedItemList);
-        // print filter result
+
+        // Print filter result
+        for (RecommendedItem recommendedItem : recommendedItemList) {
+            System.out.println(
+                    "user:" + recommendedItem.getUserId() + " " +
+                    "item:" + recommendedItem.getItemId() + " " +
+                    "value:" + recommendedItem.getValue()
+            );
+        }
+
+        // Can also filter based on a single item or a single user
+        userIdList = new ArrayList<>();
+        itemIdList = new ArrayList<>();
+
+        // Filter the recommended result
+        // By specifying results of user and item
+        System.out.println("All items of user 2");
+        userIdList.add("2");
+
+        recommendedItemList = recommender.getRecommendedList();
+        filter.setUserIdList(userIdList);
+        filter.setItemIdList(itemIdList);
+        recommendedItemList = filter.filter(recommendedItemList);
+
+
+        // Print filter result
         for (RecommendedItem recommendedItem : recommendedItemList) {
             System.out.println(
                     "user:" + recommendedItem.getUserId() + " " +
