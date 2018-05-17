@@ -90,8 +90,13 @@ public class TestLibrecTwo {
 
         System.out.println("Done setting context from recommender");
 
-
         // Ranking instead of rating prediction
+        // Setting this will not calculate rmse
+        // not setting this however, will not calculate ranking
+        // you can only do one or the other BUT not both.
+        // unless you run recommendation again from scratch
+        // so just make 2 different files for future
+        conf.set("rec.eval.enable", "true");
         conf.set("rec.recommender.isranking", "true");
         conf.set("rec.recommender.ranking.topn", "10");
 
@@ -102,15 +107,21 @@ public class TestLibrecTwo {
 
         System.out.println("Done recommending");
 
+        /* //
         // Evaluate the recommended result
-        //RecommenderEvaluator evaluator = new RMSEEvaluator();
-        //System.out.println("RMSE: " + recommender.evaluate(evaluator));
-        RecommenderEvaluator evaluator = new NormalizedDCGEvaluator();
-        List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
-        System.out.println("NDCG: " + recommender.evaluate(evaluator));
+        RecommenderEvaluator evaluatorRmse = new RMSEEvaluator();
+        System.out.println("RMSE: " + recommender.evaluate(evaluatorRmse));
+        // */
+
+
+        RecommenderEvaluator evaluatorNdcg = new NormalizedDCGEvaluator();
+        // Must set evaluator manually here for it to work.
+        evaluatorNdcg.setTopN(10);
+        System.out.println("NDCG: " + recommender.evaluate(evaluatorNdcg));
         // RecommendedList recommendedItemList = recommender.getRecommendedList();
         // System.out.println("NDCG: " + evaluator.evaluate(context, recommendedItemList));
 
+        List<RecommendedItem> recommendedItemList = recommender.getRecommendedList();
         // Set id list of filter
         List<String> userIdList = new ArrayList<>();
         List<String> itemIdList = new ArrayList<>();
