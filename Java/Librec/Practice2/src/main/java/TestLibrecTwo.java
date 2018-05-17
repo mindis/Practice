@@ -28,8 +28,19 @@ public class TestLibrecTwo {
 
         // Build data model
         Configuration conf = new Configuration();
-        String dataLocation = "/root/Github/Public/RecommenderSystems/librec/data";
+        String dataLocation = "/root/Github/RecommendationSystems/sclrecommender/data/movielens";
+        /* 
         conf.set("dfs.data.dir", dataLocation);
+        conf.set("data.input.path", "ml-100k/u.data");
+        // */
+        //
+        conf.set("dfs.data.dir", dataLocation);
+        // Librec only splits by tabs and no other delimiter
+        // so manually created a copy of the file, and replaced all old delimiters of "::" to " "
+        // conf.set("data.input.path", "ml-1m/ratings.dat"); 
+        conf.set("data.input.path", "ml-1m/ratingsLibrec.dat");
+        // */
+
         TextDataModel dataModel = new TextDataModel(conf);
         dataModel.buildDataModel();
 
