@@ -18,7 +18,6 @@ import net.librec.recommender.cf.ItemKNNRecommender;
 // Ranking recommender
 import net.librec.recommender.cf.ranking.WRMFRecommender;
 
-
 import net.librec.eval.RecommenderEvaluator;
 // Rating evaluator
 import net.librec.eval.rating.RMSEEvaluator;
@@ -30,7 +29,6 @@ import net.librec.filter.GenericRecommendedFilter;
 import net.librec.recommender.item.RecommendedItem;
 import net.librec.recommender.item.RecommendedList;
 
-// public class TestZkConnection {
 public class TestLibrecTwo {
     private static LibrecTwo lrTwo; 
     public static void main(String[] args) throws Exception {
@@ -133,7 +131,6 @@ public class TestLibrecTwo {
         System.out.println("All items of user 1, also all users of item 70");
         userIdList.add("1");
         itemIdList.add("70");
-
 
         GenericRecommendedFilter filter = new GenericRecommendedFilter();
         filter.setUserIdList(userIdList);
