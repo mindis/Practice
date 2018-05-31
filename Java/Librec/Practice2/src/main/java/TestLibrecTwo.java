@@ -154,6 +154,9 @@ public class TestLibrecTwo {
         System.out.println("All items of user 2");
         userIdList.add("2");
 
+        // Returns the list of items that is recommended by this recommender
+        // The list is sorted by ranking if ranking evaluation and setTopK was set
+        // Otherwise, the list is unsorted item:rating pair
         recommendedItemList = recommender.getRecommendedList();
         filter.setUserIdList(userIdList);
         filter.setItemIdList(itemIdList);
