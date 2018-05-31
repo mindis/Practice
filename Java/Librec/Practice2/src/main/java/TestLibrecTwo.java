@@ -77,12 +77,52 @@ public class TestLibrecTwo {
 
         // Rating recommender
         //
-        conf.set("rec.neighbors.knn.number", "80");
-        Recommender recommender = new ItemKNNRecommender();
+        //conf.set("rec.neighbors.knn.number", "80");
+        //Recommender recommender = new ItemKNNRecommender();
         // */
 
         // Ranking Recommender
-        //Recommender recommender = new WRMFRecommender();
+        // Set hyperparameters for MatrixFactorization class (parent of WRMF)
+        // Values below are from benchmark released online
+        // https://www.librec.net/release/v1.3/example.html
+        // alpha=1.0 (i think this is weight coefficient)
+        // factors=20, reg=0.015, max.iter=10
+        // calculated NDCG was 0.631 on the site for ml100k
+        // Set values according to those used in benchmarks
+        conf.set("rec.iterator.maximum", "10");
+        conf.set("rec.factor.number", "20");
+        conf.set("rec.user.regularization", "0.015f");
+        conf.set("rec.item.regularization", "0.015f");
+        conf.set("rec.wrmf.weight.coefficient","1.0");
+        
+        // Values below are gotten from the default configuration file for WRMF test files
+        // pathToLibrec/librec/core/src/main/resources/rec/cf/ranking/wrmf-test.properties 
+        /* //
+        rec.recommender.class=wrmf
+        rec.iterator.maximum=20
+        rec.user.regularization=0.01
+        rec.item.regularization=0.01
+        rec.factor.number=10
+        rec.recommender.isranking=true
+        rec.recommender.ranking.topn=10
+        rec.wrmf.weight.coefficient=4.0
+        // */ 
+        // confidence weight coefficient, alpha in original paper
+
+        // Values below are gotten from Matirx Factorization default values in code
+        // It takes in default values if nothing was set
+        /*
+        numIterations = conf.getInt("rec.iterator.maximum",100);
+        learnRate = conf.getFloat("rec.iterator.learnrate", 0.01f);
+        maxLearnRate = conf.getFloat("rec.iterator.learnrate.maximum", 1000.0f);
+        regUser = conf.getFloat("rec.user.regularization", 0.01f);
+        regItem = conf.getFloat("rec.item.regularization", 0.01f);
+        numFactors = conf.getInt("rec.factor.number", 10);
+        isBoldDriver = conf.getBoolean("rec.learnrate.bolddriver", false);
+        decay = conf.getFloat("rec.learnrate.decay", 1.0f);
+        */
+
+        Recommender recommender = new WRMFRecommender();
 
         recommender.setContext(context);
 
