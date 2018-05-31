@@ -4,11 +4,18 @@
 # Below works
 mvn clean
 mvn package
-./target/LibRecPracticeTwoDemo 
+# Line below runs it normally
+# ./target/LibRecPracticeTwoDemo 
+# line below debugs it
 java -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y -jar target/LibRecPracticeTwoDemo 
 
 # Now open up a new terminal and run 
-# >> jdb -attach localhost:8000
-# Then you can run
-# >> help
-# >> run
+jdb -attach localhost:8000
+# Get possible commands
+help
+# Set a breakpoint at line 39 of the packageName:className
+stop at com.librecPracticeTwo.app.TestLibrecTwo:39
+# Run the debugger
+run
+# Step through it
+step 
