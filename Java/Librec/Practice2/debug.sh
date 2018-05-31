@@ -13,9 +13,21 @@ java -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=y -jar tar
 jdb -attach localhost:8000
 # Get possible commands
 help
-# Set a breakpoint at line 39 of the packageName:className
+# Set a breakpoint at line 39 of the packageName.className
 stop at com.librecPracticeTwo.app.TestLibrecTwo:39
 # Run the debugger
 run
-# Step through it
+# Step through it (goes into each function)
 step 
+# Next through it (runs over each function and stays in current method)
+next
+
+# List local variables
+locals
+
+# print a local variable
+print localVarA
+
+# get information from an array
+dump arrA
+print arrA
