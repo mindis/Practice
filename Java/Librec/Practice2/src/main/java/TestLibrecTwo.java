@@ -53,7 +53,7 @@ public class TestLibrecTwo {
 
         // 100k
         conf.set("data.input.path", "ml-100k/u.data");
-
+        
         TextDataModel dataModel = new TextDataModel(conf);
         dataModel.buildDataModel();
         System.out.println("Done building data model");
@@ -65,7 +65,7 @@ public class TestLibrecTwo {
 
         // Build similarity
         conf.set("rec.recommender.similarity.key" ,"item");
-        RecommenderSimilarity similarity = new PCCSimilarity();
+        RecommenderSimilarity similarity = new PCCSimilarity(); // Pearson Cross Correlation
         similarity.buildSimilarityMatrix(dataModel);
 
         // Set similarity into recommender context
@@ -110,7 +110,6 @@ public class TestLibrecTwo {
         RecommenderEvaluator evaluatorRmse = new RMSEEvaluator();
         System.out.println("RMSE: " + recommender.evaluate(evaluatorRmse));
         // */
-
 
         RecommenderEvaluator evaluatorNdcg = new NormalizedDCGEvaluator();
         // Must set evaluator manually here for it to work.
@@ -159,7 +158,6 @@ public class TestLibrecTwo {
         filter.setUserIdList(userIdList);
         filter.setItemIdList(itemIdList);
         recommendedItemList = filter.filter(recommendedItemList);
-
 
         // Print filter result
         for (RecommendedItem recommendedItem : recommendedItemList) {
