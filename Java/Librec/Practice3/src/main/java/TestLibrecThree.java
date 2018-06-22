@@ -1,5 +1,10 @@
 package com.librecPracticeThree.app;
 
+// Main purpose is to test if code is right from Python using Librec
+// Just make sure pass in exact same splits, then call any algorithm you want.
+// Except, you need to figure out how to call a specific test split directly
+// using any algorithm, so that you can compare on same split with Python's version of code
+
 // Java Imports
 import java.util.List; 
 import java.util.ArrayList;
@@ -8,6 +13,10 @@ import java.util.ArrayList;
 import net.librec.conf.Configuration;
 import net.librec.data.model.TextDataModel;
 import net.librec.recommender.RecommenderContext;
+
+// Configuration File
+import net.librec.conf.Configured;
+
 
 import net.librec.similarity.RecommenderSimilarity;
 import net.librec.similarity.PCCSimilarity;
@@ -52,29 +61,24 @@ public class TestLibrecThree {
         conf.set("data.input.path", "ml-1m/ratingsLibrec.dat");
 
         // 100k
+        // My own dummy train and test ratings file for testing
         conf.set("data.input.path", "ml-100k/u.data");
+        conf.set("data.input.path", "ml-100k/tempSoonLibrecTrain.data");
+        conf.set("data.testset.path", "ml-100k/u1.test"); 
+        conf.set("data.testset.path", "ml-100k/tempSoonLibrecTest.data");
         
+        conf.set("data.model.splitter", "testset"); // Split using given test set
+        // Pass in location to test file
+        // conf.set("inputDataPath", conf.get("dfs.data.dir") + "/test/given-testset");
+        // conf.set("data.testset.path", "/test/given-testset/test/ratings_0.txt");
+        conf.set(Configured.CONF_DATA_COLUMN_FORMAT, "UIRT");
+        // This line below goes all the way to converter.processData 
         TextDataModel dataModel = new TextDataModel(conf);
+        // This line below goes all the way to building splitter for train and test
+        // Hence, just need to set conf properly!
+        // Don't need all the test code below
         dataModel.buildDataModel();
         System.out.println("Done building data model");
-
-        /*
-        Main purpose is to check Python's code is right. 
-        TODO: Figure out how to split movielens data by given test set. 
-        TODO: This way, to compare, all I need to do is output a ratings.csv containing
-              only the test ratings (with same userId, itemId available in entire training)
-        I can run the same algorithm on same split using Java here
-        Similarly, can check using same split on Python
-        conf.set("inputDataPath", conf.get("dfs.data.dir") + "/test/given-testset");
-        conf.set(Configured.CONF_DATA_COLUMN_FORMAT, "UIR");
-        conf.set("data.testset.path", "/test/given-testset/test/ratings_0.txt");
-        convertor = new TextDataConvertor(conf.get(Configured.CONF_DATA_COLUMN_FORMAT), conf.get("inputDataPath"));
-        convertor.processData();
-        GivenTestSetDataSplitter splitter = new GivenTestSetDataSplitter(convertor,conf);
-        splitter.splitData();
-        assertEquals(splitter.getTrainData().size(), 35491-10435);
-        assertEquals(splitter.getTestData().size(), 10435);
-        */
 
         // Build recommender context
         // contains data model, configuration, similarity matrix
