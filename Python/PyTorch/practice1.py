@@ -58,9 +58,3 @@ for currEpochIndex in range(numEpoch):
     # Backward pass
     #gradY = 2.0*(ypred - y)
     # TODO: 
-
-
-
-
-
-
