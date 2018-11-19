@@ -1,4 +1,4 @@
-# Working with torch.vision in PyTorch
+# Working with torch.vision
 # 1. Load and normalizing the CIFAR10 training and test datasets using
 # 2. Define a Convolution Neural Network
 # 3. Define a loss function

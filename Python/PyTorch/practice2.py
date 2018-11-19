@@ -1,4 +1,4 @@
-# This illustrates working with torch.nn in PyTorch
+# This illustrates working with torch.nn
 import torch # autodifferentiation
 import torch.nn as nn # neural networks
 import torch.nn.functional as F # Relu and maxPool
@@ -26,7 +26,7 @@ class Net(nn.Module):
         Define the layers that contains parameters
         '''
         super(Net, self).__init__()
-        self.conv1 = nn.Conv2d(1, 6, 5) # 1 input image channel, 6 output channels, 5x5 square convolution
+        self.conv1 = nn.Conv2d(1, 6, 5) # 1 input image channel (grayscale image), 6 output channels, 5x5 square convolution
         self.conv2 = nn.Conv2d(6, 16, 5)
         self.fc1 = nn.Linear(16 * 5 * 5, 120) # (X, Y) for Y = WX + B, W and B created automatically
         self.fc2 = nn.Linear(120, 84)
