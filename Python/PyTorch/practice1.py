@@ -6,12 +6,14 @@ dtype = torch.float # Use floating point
 # device = torch.device('cpu') # Use CPU 
 device = torch.device('cuda:0') # Use GPU 
 
-N, Din, H, Dout = 64, 1000, 100, 10 
+N = 64 # Number of data
+Din = 1000 # Input dimension
+H = 100 # Hidden layer dimension
+Dout = 10 # Output dimension
 
 # These are PyTorch Tensor (multidimensional array)
 # Similar to Numpy array, doesn't know about computational graph or gradients
 # However, PyTorch Tensor can run on GPU 
-
 
 # Create random input and random output data
 x = torch.randn(N, Din, device=device, dtype=dtype) 
